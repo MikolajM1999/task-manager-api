@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "env-cmd ./config/dev.env nodemon src/index.js",
-    "chuj": "/Users/Mikołaj/mongodb/bin/mongod.exe --dbpath=/Users/Mikołaj/mongodb-data"
+    "dbrun": "/Users/Mikołaj/mongodb/bin/mongod.exe --dbpath=/Users/Mikołaj/mongodb-data"
   },
   "keywords": [],
   "author": "",
