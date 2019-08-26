@@ -18,16 +18,7 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         validate(value) {
             if (!validator.isEmail(value)) {
-                throw new Error('Email is invalid!')
-            }
-        }
-    },
-    age: {
-        type: Number,
-        default: 0,
-        validate(value) {
-            if (value < 0) {
-                throw new Error('Age must be a positive number!')
+                throw new Error('Email is invalid')
             }
         }
     },
@@ -38,7 +29,16 @@ const userSchema = new mongoose.Schema({
         trim: true,
         validate(value) {
             if (value.toLowerCase().includes('password')) {
-                throw new Error(`The password can't contain word "password"!`)
+                throw new Error('Password cannot contain "password"')
+            }
+        }
+    },
+    age: {
+        type: Number,
+        default: 0,
+        validate(value) {
+            if (value < 0) {
+                throw new Error('Age must be a postive number')
             }
         }
     },
@@ -52,8 +52,8 @@ const userSchema = new mongoose.Schema({
         type: Buffer
     }
 }, {
-        timestamps: true
-    })
+    timestamps: true
+})
 
 userSchema.virtual('tasks', {
     ref: 'Task',
@@ -61,7 +61,6 @@ userSchema.virtual('tasks', {
     foreignField: 'owner'
 })
 
-// instance methods
 userSchema.methods.toJSON = function () {
     const user = this
     const userObject = user.toObject()
@@ -79,10 +78,10 @@ userSchema.methods.generateAuthToken = async function () {
 
     user.tokens = user.tokens.concat({ token })
     await user.save()
+
     return token
 }
 
-// model methods
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({ email })
 

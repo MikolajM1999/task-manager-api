@@ -6,7 +6,6 @@ const auth = require('../middleware/auth')
 const { sendWelcomeEmail, sendCancelationEmail } = require('../emails/account')
 const router = new express.Router()
 
-// ||| USERS ||||
 router.post('/users', async (req, res) => {
     const user = new User(req.body)
 
@@ -15,8 +14,8 @@ router.post('/users', async (req, res) => {
         sendWelcomeEmail(user.email, user.name)
         const token = await user.generateAuthToken()
         res.status(201).send({ user, token })
-    } catch (error) {
-        res.status(400).send(error)
+    } catch (e) {
+        res.status(400).send(e)
     }
 })
 
@@ -25,7 +24,7 @@ router.post('/users/login', async (req, res) => {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
         res.send({ user, token })
-    } catch (error) {
+    } catch (e) {
         res.status(400).send()
     }
 })
@@ -38,7 +37,7 @@ router.post('/users/logout', auth, async (req, res) => {
         await req.user.save()
 
         res.send()
-    } catch (error) {
+    } catch (e) {
         res.status(500).send()
     }
 })
@@ -48,7 +47,7 @@ router.post('/users/logoutAll', auth, async (req, res) => {
         req.user.tokens = []
         await req.user.save()
         res.send()
-    } catch (error) {
+    } catch (e) {
         res.status(500).send()
     }
 })
@@ -70,8 +69,8 @@ router.patch('/users/me', auth, async (req, res) => {
         updates.forEach((update) => req.user[update] = req.body[update])
         await req.user.save()
         res.send(req.user)
-    } catch (error) {
-        res.status(400).send(error)
+    } catch (e) {
+        res.status(400).send(e)
     }
 })
 
@@ -80,7 +79,7 @@ router.delete('/users/me', auth, async (req, res) => {
         await req.user.remove()
         sendCancelationEmail(req.user.email, req.user.name)
         res.send(req.user)
-    } catch (error) {
+    } catch (e) {
         res.status(500).send()
     }
 })
@@ -91,7 +90,7 @@ const upload = multer({
     },
     fileFilter(req, file, cb) {
         if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-            return cb(new Error('Please upload an image.'))
+            return cb(new Error('Please upload an image'))
         }
 
         cb(undefined, true)
